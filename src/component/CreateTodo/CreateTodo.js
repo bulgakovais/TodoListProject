@@ -6,7 +6,7 @@ import { createTodo } from '../../store/todo/actions'
 import { getTodoRefById } from '../../services/firebase'
 import { set } from "firebase/database"
 // import { getTodoList } from "../../store/todo/selector";
-
+import '../../App.less'
 
 export function CreateTodo() {
 
@@ -47,23 +47,23 @@ export function CreateTodo() {
         setFileTodo('')
     }
 
-
     // const check = getTodoList()
     // console.log('check: ', check);
 
     return (<>
-        <form onSubmit={handleCreateTodo} >
-            <label htmlFor="title">Укажите название заметки</label>
-            <input type='text' id='title' value={titleTodo} onChange={(e) => { setTitleTodo(e.target.value) }} />
+        <form onSubmit={handleCreateTodo} className='form'>
+            <label htmlFor="title">Название заметки</label>
+            <input className='input_main' type='text' id='title' value={titleTodo} onChange={(e) => { setTitleTodo(e.target.value) }} />
 
             <label htmlFor="descr">Описание заметки</label>
-            <input type='text' id='descr' value={descriptionTodo} onChange={(e) => { setDescriptionTodo(e.target.value) }} />
+            <input className='input_main' type='text' id='descr' value={descriptionTodo} onChange={(e) => { setDescriptionTodo(e.target.value) }} />
 
-            <label htmlFor="file">Прикрепить файл</label>
-            <input type="file" id="file" name="file" value={fileTodo} onChange={(e) => { setFileTodo(e.target.value) }} multiple />
+            <label id="labelFile" className="label_file" htmlFor="file">Прикрепить файл</label>
+            <div>
+                <input className='input_file' type="file" id="file" value={fileTodo} onChange={(e) => { setFileTodo(e.target.value) }} multiple />
+            </div>
 
-
-            <button type='submit'>Создать</button>
+            <button className='input_main btn' type='submit'>Создать</button>
 
         </form >
         {/* <p>{check}</p> */}

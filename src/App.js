@@ -5,19 +5,18 @@ import { CreateTodo } from './component/CreateTodo/CreateTodo'
 import { Provider } from 'react-redux';
 import { store, persistor } from './store'
 import { PersistGate } from 'redux-persist/integration/react'
+import './App.less'
 
 function App() {
 
-  return (<>
-
-
+  return (<div className='container'>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <Header />
         <CreateTodo />
       </PersistGate>
     </Provider>
-  </>
+  </div>
   )
 }
 

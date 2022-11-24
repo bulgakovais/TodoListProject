@@ -1,8 +1,9 @@
+import '../../App.less'
 
 
 export function Header() {
     return (<>
-        <h1>ToDo List</h1>
+        <div className='header'>TODO LIST</div>
     </>
     )
 }
