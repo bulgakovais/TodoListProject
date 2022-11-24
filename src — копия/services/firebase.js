@@ -1,7 +1,4 @@
-
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref } from "firebase/database"
-
+import firebase from 'firebase'
 
 const firebaseConfig = {
     apiKey: "AIzaSyDbE6ly-HAzUvlXUrxRf4SBbFKm_AhBij8",
@@ -13,10 +10,8 @@ const firebaseConfig = {
     appId: "1:265159543978:web:4e41c232734980e1fc14d3"
 };
 
-const app = initializeApp(firebaseConfig)
+firebase.initializeApp(firebaseConfig)
 
-export const db = getDatabase(app)
+export const db = firebase.database()
 
-export const todosRef = ref(db, 'todos')
-
-export const getTodoRefById = (todoId) => ref(db, `todos/${todoId}`)
+export const todosRef = db.ref('todos')
