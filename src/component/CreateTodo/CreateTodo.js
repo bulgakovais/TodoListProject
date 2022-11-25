@@ -4,8 +4,7 @@ import { nanoid } from 'nanoid';
 import { createTodo } from '../../store/todo/actions'
 // import dayjs from 'dayjs'
 import { getTodoRefById } from '../../services/firebase'
-import { set } from "firebase/database"
-// import { getTodoList } from "../../store/todo/selector";
+import { set, push } from "firebase/database"
 import '../../App.less'
 
 export function CreateTodo() {
@@ -31,7 +30,8 @@ export function CreateTodo() {
             id: newTodoId,
             title: titleTodo,
             description: descriptionTodo,
-            file: fileTodo
+            file: fileTodo,
+            status: false
         }
         console.log(newTodo);
         dispatch(createTodo(newTodo))

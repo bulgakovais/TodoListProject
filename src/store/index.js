@@ -11,7 +11,6 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const config = {
     key: 'root',
     storage, // по умолчанию это localStorage в браузере
-    // whitelist: 'chatsReducer',  // только данные из этого редьюсера кэшируются
     blacklist: 'articles', //  данные этого редьюсера не кэшируются
 }
 

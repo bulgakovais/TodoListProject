@@ -6,6 +6,7 @@
   @todo-able:rgb(223, 182, 176);
   @background-color: #f0eeee;
   @button-color:#331c20;
+  @button-color-hover:#5c3e42;
 
 
 * {
@@ -18,7 +19,7 @@
     max-width: 1170px;
     margin: 40px 15px;
   }
-
+// _________________Header___________________________
 .header{
     display: flex;
     justify-content: center;
@@ -30,6 +31,7 @@
     font-weight: 800;
 }
 
+// ___________________ Create Todo form ___________________
 .form{
     color: @font-color;
     font-weight: 500;
@@ -55,6 +57,61 @@
     background-color: @button-color;
     color: #f0eeee;
     &:hover{
-        background-color: #5c3e42;
+        background-color: @button-color-hover;
     }
 }
+
+// ___________ Todo List ___________________________
+    .todoItem{
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px;
+    font-size: 18px;
+    background-color: @todo-disable;
+    margin: 30px 0;
+    
+    &_flex{
+        display: flex;
+        justify-content: space-between;
+        }
+    &_title{
+        margin-left: 20px;
+    }
+    }
+
+    .todoItem_description{
+        margin-top: 20px;
+        padding: 20px;
+        background-color: @background-color;
+        &_text{
+            font-weight: 600;
+        }
+    }
+  
+    .icon_edit{
+        color: white;
+    }
+    .btn_todo{
+        width: 23px;
+        height: 23px;
+        font-size: 17px;
+        background-color: @button-color;
+        color: white;
+        margin: 0 15px;
+        &:hover{
+            background-color: @button-color-hover;
+            color: rgb(143, 224, 141);
+            scale: 120%;
+        };
+        &_delete:hover{
+            color: rgb(218, 67, 67);
+        }
+    }
+   
+    .fa-check-circle{
+        color:rgb(143, 224, 141);
+    }
+
+    .fa-circle-o{
+        color:  rgb(218, 67, 67);
+    }
