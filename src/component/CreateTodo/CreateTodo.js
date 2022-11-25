@@ -2,20 +2,17 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { nanoid } from 'nanoid';
 import { createTodo } from '../../store/todo/actions'
-// import dayjs from 'dayjs'
 import { getTodoRefById } from '../../services/firebase'
-import { set, push } from "firebase/database"
+import { set, update } from "firebase/database"
 import '../../App.less'
 
-export function CreateTodo() {
+export function CreateTodo({ ...todo }) {
 
     const dispatch = useDispatch()
-    const [titleTodo, setTitleTodo] = useState('')
-
-    const [descriptionTodo, setDescriptionTodo] = useState('')
-
+    const [titleTodo, setTitleTodo] = useState(todo.title ? todo.title : '')
+    const [descriptionTodo, setDescriptionTodo] = useState(todo.descr ? todo.descr : '')
+    const [dateTodo, setDateTodo] = useState(todo.date ? todo.date : '')
     const [fileTodo, setFileTodo] = useState('')
-
 
     // Создание задачи
     const handleCreateTodo = (event) => {
@@ -31,7 +28,8 @@ export function CreateTodo() {
             title: titleTodo,
             description: descriptionTodo,
             file: fileTodo,
-            status: false
+            status: false,
+            date: dateTodo
         }
         console.log(newTodo);
         dispatch(createTodo(newTodo))
@@ -41,17 +39,31 @@ export function CreateTodo() {
 
     }
 
+    // Обновление задачи
+    const handleUpdateTodo = () => {
+
+        const updateTodo = {
+            title: titleTodo,
+            description: descriptionTodo,
+            file: fileTodo,
+            status: todo.status,
+            date: dateTodo
+        }
+        console.log(`todo.id:`, todo.id)
+        update(getTodoRefById(todo.id), updateTodo)
+    }
+
     function getDefaultInputValue() {
         setTitleTodo('')
         setDescriptionTodo('')
         setFileTodo('')
+        setDateTodo('')
     }
 
-    // const check = getTodoList()
-    // console.log('check: ', check);
-
     return (<>
-        <form onSubmit={handleCreateTodo} className='form'>
+        <form onSubmit={
+            todo.id ? handleUpdateTodo : handleCreateTodo
+        } className='form'>
             <label htmlFor="title">Название заметки</label>
             <input className='input_main' type='text' id='title' value={titleTodo} onChange={(e) => { setTitleTodo(e.target.value) }} />
 
@@ -62,11 +74,17 @@ export function CreateTodo() {
             <div>
                 <input className='input_file' type="file" id="file" value={fileTodo} onChange={(e) => { setFileTodo(e.target.value) }} multiple />
             </div>
-
-            <button className='input_main btn' type='submit'>Создать</button>
+            <label htmlFor="date">Дата окончания</label>
+            <input className='input_date' type='date' id='date' value={dateTodo} onChange={(e) => {
+                setDateTodo(e.target.value)
+                console.log(`date Create todo:`, e.target.value)
+            }} />
+            <button className='input_main btn' type='submit'>
+                {todo.title ? (<span>Обновить</span>) :
+                    (<span>Создать</span>)}
+            </button>
 
         </form >
-        {/* <p>{check}</p> */}
     </>
     )
 }

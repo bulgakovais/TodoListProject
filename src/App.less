@@ -17,7 +17,7 @@
 
 .container {
     max-width: 1170px;
-    margin: 40px 15px;
+    margin: 0 15px;
   }
 // _________________Header___________________________
 .header{
@@ -51,6 +51,14 @@
     height: 50px;
     margin-top: 8px;
 }
+.input_date{
+    width: 25%;
+    min-width: 164px;
+    margin-top: 10px;
+    font-weight: 500;
+    font-family: 'Roboto';
+    padding: 5px;
+}
 .btn{
     width: 20%;
     min-width: 164px;
@@ -62,6 +70,11 @@
 }
 
 // ___________ Todo List ___________________________
+
+    .todoHeader{
+        margin-top: 50px;
+    }
+
     .todoItem{
     display: flex;
     flex-direction: column;
@@ -88,6 +101,9 @@
         }
     }
   
+    .unvalid_data{
+        color: rgb(218, 3, 3);
+    }
     .icon_edit{
         color: white;
     }
@@ -114,4 +130,8 @@
 
     .fa-circle-o{
         color:  rgb(218, 67, 67);
+    }
+
+    .updateTodoFlex{
+        margin-top: 15px;
     }
