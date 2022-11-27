@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useDispatch } from "react-redux"
 import { nanoid } from 'nanoid';
 import { createTodo } from '../../store/todo/actions'
@@ -6,81 +6,152 @@ import { getTodoRefById } from '../../services/firebase'
 import { set, update } from "firebase/database"
 import '../../App.less'
 
-export function CreateTodo({ ...todo }) {
+export function CreateTodo({ ...el }) {
 
     const dispatch = useDispatch()
-    const [titleTodo, setTitleTodo] = useState(todo.title ? todo.title : '')
-    const [descriptionTodo, setDescriptionTodo] = useState(todo.descr ? todo.descr : '')
-    const [dateTodo, setDateTodo] = useState(todo.date ? todo.date : '')
-    const [fileTodo, setFileTodo] = useState('')
+    const [titleTodo, setTitleTodo] = useState(el.title ? el.title : '')
+    const [descriptionTodo, setDescriptionTodo] = useState(el.descr ? el.descr : '')
+    const [dateTodo, setDateTodo] = useState(el.date ? el.date : '')
+    const [fileTodo, setFileTodo] = useState(el.file ? el.file : '')
+    const buttonFile = useRef(null)
 
-    // Создание задачи
-    const handleCreateTodo = (event) => {
 
-        event.preventDefault()
+    /** 
+  * Создает todo с одинаковыми ключами для нового/отредактированного todo
+  * @param {string} title - заголовок todo
+  * @param {string} description - описание todo
+  * @param {object} file - прикрепленный файл todo
+  * @param {boolean} status - статус todo
+  * @param {string} date - дата завершения todo
+  * @return {object} newTodo
+  */
+    function getNewTodo() {
         if (titleTodo === '') {
             alert("Введите название ToDo")
             return
         }
-        const newTodoId = `${nanoid()}`
         const newTodo = {
-            id: newTodoId,
             title: titleTodo,
             description: descriptionTodo,
             file: fileTodo,
             status: false,
             date: dateTodo
         }
-        console.log(newTodo);
+        return newTodo
+    }
+
+
+    /** 
+       * Создает новый todo
+       * @param {object} newTodo - объект, с новыми данными
+       * @param {string} newTodoId - id нового todo (nanoid()) 
+       * @return {object} newTodoCreate
+       */
+    function getCreateTodo() {
+        const newTodo = getNewTodo()
+        const newTodoId = `${nanoid()}`
+        const newTodoCreate = { ...newTodo, id: newTodoId }
+
+        return newTodoCreate
+    }
+
+
+    /** 
+     * Создает отредактированный todo
+     * @param {boolean} status - статус todo 
+     * @param {object} newTodo - объект, с отредактированными данными
+     * @param {object} updateTodo - объект newTodo с добавленным статусом из БД
+     * @return {object} updateTodo
+     */
+    function getUpdateTodo() {
+        const newTodo = getNewTodo()
+        const updateTodo = { ...newTodo, status: el.status, }
+
+        return updateTodo
+    }
+
+    /** 
+   * Запускает создание нового todo,
+   * передает todo в редьюсер для создания его в сторе
+   * записывает todo в БД
+   * обнуляет поля формы создания todo
+   * @param {object} newTodo - созданный todo
+   */
+    const handleCreateTodo = async (event) => {
+
+        event.preventDefault()
+        const newTodo = getCreateTodo()
         dispatch(createTodo(newTodo))
-        set(getTodoRefById(newTodoId), newTodo)
-
+        await set(getTodoRefById(newTodo.id), newTodo)
+        // handleUploadFile(newTodo.id)
         getDefaultInputValue()
-
     }
 
-    // Обновление задачи
+    /** 
+  * Запускает создание отредактированного todo,
+  * обновляет todo в БД по id
+  * @param {object} newTodo - созданный todo
+  */
     const handleUpdateTodo = () => {
-
-        const updateTodo = {
-            title: titleTodo,
-            description: descriptionTodo,
-            file: fileTodo,
-            status: todo.status,
-            date: dateTodo
-        }
-        console.log(`todo.id:`, todo.id)
-        update(getTodoRefById(todo.id), updateTodo)
+        const updateTodo = getUpdateTodo()
+        update(getTodoRefById(el.id), updateTodo)
     }
 
+    /** Записывают новые значение в state при обновлении форм
+      */
+    const setTitle = (e) => {
+        setTitleTodo(e.target.value)
+    }
+    const setDescription = (e) => {
+        setDescriptionTodo(e.target.value)
+    }
+    const setDate = (e) => {
+        setDateTodo(e.target.value)
+    }
+
+    const handleChangeFile = (e) => {
+        setFileTodo(e.target.files[0].name)
+    }
+
+    /** Слушает Click на элементе с ref buttonFile
+      */
+    const handlePickFile = () => {
+        buttonFile.current.click()
+    }
+
+    /** Очищает поля формы
+      */
     function getDefaultInputValue() {
         setTitleTodo('')
         setDescriptionTodo('')
-        setFileTodo('')
         setDateTodo('')
+        setFileTodo('')
     }
 
+
+
     return (<>
-        <form onSubmit={
-            todo.id ? handleUpdateTodo : handleCreateTodo
-        } className='form'>
+        <form className='form' onSubmit={
+            el.id ? handleUpdateTodo : handleCreateTodo
+        } >
             <label htmlFor="title">Название заметки</label>
-            <input className='input_main' type='text' id='title' value={titleTodo} onChange={(e) => { setTitleTodo(e.target.value) }} />
+            <input className='input_main' type='text' id='title' value={titleTodo} onChange={setTitle} />
 
             <label htmlFor="descr">Описание заметки</label>
-            <input className='input_main' type='text' id='descr' value={descriptionTodo} onChange={(e) => { setDescriptionTodo(e.target.value) }} />
+            <input className='input_main' type='text' id='descr' value={descriptionTodo} onChange={setDescription} />
 
-            <label id="labelFile" className="label_file" htmlFor="file">Прикрепить файл</label>
-            <div>
-                <input className='input_file' type="file" id="file" value={fileTodo} onChange={(e) => { setFileTodo(e.target.value) }} multiple />
+            <div className='file_block'><div className='btn_file' onClick={handlePickFile}><span>Выбрать файл</span></div>
+                <input ref={buttonFile} className='hidden' type="file" id="file"
+                    onChange={handleChangeFile} multiple />
+
+                {fileTodo && (
+                    <div className='selected_file'>Выбранный файл: {fileTodo}</div>
+                )}
             </div>
             <label htmlFor="date">Дата окончания</label>
-            <input className='input_date' type='date' id='date' value={dateTodo} onChange={(e) => {
-                setDateTodo(e.target.value)
-                console.log(`date Create todo:`, e.target.value)
-            }} />
+            <input className='input_date' type='date' id='date' value={dateTodo} onChange={setDate} />
             <button className='input_main btn' type='submit'>
-                {todo.title ? (<span>Обновить</span>) :
+                {el.title ? (<span>Обновить</span>) :
                     (<span>Создать</span>)}
             </button>
 

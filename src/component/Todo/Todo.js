@@ -7,8 +7,8 @@ import { setTodos } from "../../store/todo/actions"
 import { todosRef } from '../../services/firebase'
 import '../../App.less'
 import { CreateTodo } from "../CreateTodo/CreateTodo"
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import * as dayjs from 'dayjs'
+import { DescriprionTodo } from "../DescriptionTodo/DescriprionTodo"
+
 
 
 export function Todo() {
@@ -16,18 +16,13 @@ export function Todo() {
     const [seeTodo, setSeeTodo] = useState(false)
     const [todoId, setTodoId] = useState('')
     const [edit, setEdit] = useState(false)
-    const [valid, setValid] = useState(true)
     const dispatch = useDispatch()
     const todos = useSelector(getTodoList)
-    const today = dayjs().format().substring(0, 10)
 
-
-    function handlerValidDate(date) {
-        dayjs.extend(isSameOrBefore)
-        const truthDate = dayjs(today).isSameOrBefore(date)
-        setValid(truthDate)
-    }
-
+    /**
+     * При загрузке страницы подгружает список todo из БД,
+     * записывает его в store
+     */
     useEffect(() => {
 
         const unsubscribe = onValue(todosRef, (snapShots) => {
@@ -42,18 +37,32 @@ export function Todo() {
         return unsubscribe
     }, [])
 
-
-    const handleChangeStatus = (el) => {
+    /** 
+    * Создает todo с обновленным статусом
+    * @param {object} el - измененный todo
+    * @param {boolean} status - статус todo
+    * @return {object} updateTodo
+    */
+    function getUpdateTodo(el) {
         const updateTodo = {
-            title: el.title,
-            description: el.description,
-            file: el.file,
             status: !el.status
         }
+        return updateTodo
+    }
 
+    /** 
+     * Отправляет обновленный todo в БД
+     * @params {object} el измененный todo
+     */
+    const handleChangeStatus = (el) => {
+        const updateTodo = getUpdateTodo(el)
         update(getTodoRefById(el.id), updateTodo)
     }
 
+    /** 
+    * Меняет булевое значение параметра seeTodo
+    * @param {string} id - id выбранного todo
+    */
     const handlerSeeTodo = (id) => {
         if (id === todoId) {
             setSeeTodo(!seeTodo)
@@ -62,9 +71,15 @@ export function Todo() {
             setSeeTodo(true)
         }
     }
+
+    /** 
+    * Удаляет из БД todo по id
+    * @param {object} el - выбранный todo
+    */
     function deleteTodo(el) {
         remove(getTodoRefById(el.id))
     }
+
 
     return (<>
         <h3 className='todoHeader'>Имеющиеся задачи</h3>
@@ -87,7 +102,6 @@ export function Todo() {
 
                         <button id='see' className='btn_todo' onClick={() => {
                             setTodoId(el.id)
-                            handlerValidDate(el.date)
                             handlerSeeTodo(el.id)
                         }}><i className="fa fa-eye" aria-hidden="true"></i>
                         </button>
@@ -108,23 +122,20 @@ export function Todo() {
                 </div>
 
                 {todoId === el.id && seeTodo && !edit ? (
-
-                    <div className='todoItem_description'>
-                        {el.description ? (<div><span className='todoItem_description_text'>Описание: </span> {el.description}</div>) : (<p></p>)}
-
-                        {el.file ? (<div><span className='todoItem_description_text'>Прикрепленные файлы: </span>{el.file}</div>) : (<p></p>)}
-
-                        {el.date ? (!valid && !el.status ?
-                            (<div> <span className='todoItem_description_text unvalid_data'>Дата завершения: </span>{el.date}</div>)
-                            : (<div><span className='todoItem_description_text'>Дата завершения: </span>{el.date}</div>))
-                            : (<p></p>)}
-                    </div>
+                    <DescriprionTodo el={el} ></DescriprionTodo>
                 )
                     : (<p></p>)}
 
                 {todoId === el.id && edit ?
                     (<div className='updateTodoFlex'>
-                        <CreateTodo title={el.title} descr={el.description} file={el.file} status={el.status} id={el.id} date={el.date}></CreateTodo>
+                        <CreateTodo
+                            title={el.title}
+                            descr={el.description}
+                            file={el.file}
+                            status={el.status}
+                            id={el.id}
+                            date={el.date}>
+                        </CreateTodo>
                     </div>
                     ) :
                     (<p></p>)}

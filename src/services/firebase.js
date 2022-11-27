@@ -1,6 +1,6 @@
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, child, update, remove } from "firebase/database"
+import { getDatabase, ref } from "firebase/database"
 
 
 const firebaseConfig = {
@@ -20,3 +20,5 @@ export const db = getDatabase(app)
 export const todosRef = ref(db, 'todos')
 
 export const getTodoRefById = (todoId) => ref(db, `todos/${todoId}`)
+
+

@@ -52,7 +52,7 @@
     margin-top: 8px;
 }
 .input_date{
-    width: 25%;
+    width: 19%;
     min-width: 164px;
     margin-top: 10px;
     font-weight: 500;
@@ -68,7 +68,33 @@
         background-color: @button-color-hover;
     }
 }
-
+.file_block{
+    display: flex;
+    justify-content: start;
+}
+.btn_file{
+    height: 30px;
+    width: 20%;
+    min-width: 164px;
+    background-color: #c77d78de;
+    margin: 5px 0 15px;
+    text-align: center;
+    padding-top: 5px;
+    &:hover{
+        background-color: #c89693de;
+    }
+    & span{
+        color: #331c20;
+        font-size: 14px;
+        font-weight: 500;
+    }
+}
+.selected_file{
+    color: #331c20;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 15px;
+}
 // ___________ Todo List ___________________________
 
     .todoHeader{
@@ -134,4 +160,14 @@
 
     .updateTodoFlex{
         margin-top: 15px;
+    }
+
+    .hidden{
+        opacity: 0;
+        height: 0;
+        width: 0;
+        line-height: 0;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
     }
