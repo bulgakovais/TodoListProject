@@ -83,7 +83,6 @@ export function CreateTodo({ ...el }) {
         const newTodo = getCreateTodo()
         dispatch(createTodo(newTodo))
         await set(getTodoRefById(newTodo.id), newTodo)
-        // handleUploadFile(newTodo.id)
         getDefaultInputValue()
     }
 
