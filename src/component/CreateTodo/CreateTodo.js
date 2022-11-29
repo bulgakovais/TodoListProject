@@ -49,12 +49,14 @@ export function CreateTodo({ ...el }) {
        */
     function getCreateTodo() {
         const newTodo = getNewTodo()
+        if (newTodo === undefined) {
+            return
+        }
         const newTodoId = `${nanoid()}`
         const newTodoCreate = { ...newTodo, id: newTodoId }
 
         return newTodoCreate
     }
-
 
     /** 
      * Создает отредактированный todo
@@ -81,6 +83,10 @@ export function CreateTodo({ ...el }) {
 
         event.preventDefault()
         const newTodo = getCreateTodo()
+        if (typeof (newTodo) !== 'object') {
+            console.log('Error: newTodo is not object')
+            return
+        }
         dispatch(createTodo(newTodo))
         await set(getTodoRefById(newTodo.id), newTodo)
         getDefaultInputValue()
