@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { createTodo } from '../../store/todo/actions'
 import { getTodoRefById } from '../../services/firebase'
 import { set, update } from "firebase/database"
-import '../../App.less'
+import "../../App.less"
 
 export function CreateTodo({ ...el }) {
 
@@ -57,6 +57,7 @@ export function CreateTodo({ ...el }) {
 
         return newTodoCreate
     }
+
 
     /** 
      * Создает отредактированный todo
