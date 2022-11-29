@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { createTodo } from '../../store/todo/actions'
 import { getTodoRefById } from '../../services/firebase'
 import { set, update } from "firebase/database"
-import '../../App.less'
+import "../../App.less"
 
 export function CreateTodo({ ...el }) {
 
@@ -49,6 +49,9 @@ export function CreateTodo({ ...el }) {
        */
     function getCreateTodo() {
         const newTodo = getNewTodo()
+        if (newTodo === undefined) {
+            return
+        }
         const newTodoId = `${nanoid()}`
         const newTodoCreate = { ...newTodo, id: newTodoId }
 
@@ -81,6 +84,10 @@ export function CreateTodo({ ...el }) {
 
         event.preventDefault()
         const newTodo = getCreateTodo()
+        if (typeof (newTodo) !== 'object') {
+            console.log('Error: newTodo is not object')
+            return
+        }
         dispatch(createTodo(newTodo))
         await set(getTodoRefById(newTodo.id), newTodo)
         getDefaultInputValue()

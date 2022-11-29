@@ -7,7 +7,8 @@ import { setTodos } from "../../store/todo/actions"
 import { todosRef } from '../../services/firebase'
 import '../../App.less'
 import { CreateTodo } from "../CreateTodo/CreateTodo"
-import { DescriprionTodo } from "../DescriptionTodo/DescriprionTodo"
+import { DescriprionTodo } from "../DescriptionTodo/DescriptionTodo"
+
 
 
 
@@ -98,7 +99,7 @@ export function Todo() {
                     </button>
 
                     <h4 className='todoItem_title'>{el.title}</h4>
-                    <div>
+                    <div className='params_check_todo'>
 
                         <button id='see' className='btn_todo' onClick={() => {
                             setTodoId(el.id)
